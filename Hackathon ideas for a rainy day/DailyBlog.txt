@@ -1,0 +1,1 @@
+Like The Daily Brew and Startup Websites.. but make generic so that it can pull in from different sites rss feed and easily create daily posts.
