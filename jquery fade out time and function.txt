@@ -1,0 +1,3 @@
+$("SomeSelector").fadeOut(400, function () {
+	// Some function or code
+ });
