@@ -1,0 +1,1 @@
+$("#objAbuseReports").find("tr:gt(0)").remove();
