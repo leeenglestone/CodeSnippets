@@ -1,62 +1,179 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>@Page.Title - My ASP.NET Web Page</title>
-        <link href="~/Content/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css" />
-        <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
-        <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-        <script src="~/Scripts/jquery-1.8.2.min.js"></script>
-        <script src="~/Scripts/jquery-ui-1.8.24.js"></script>
-        <script src="~/Scripts/modernizr-2.6.2.js"></script>
-        <meta name="viewport" content="width=device-width" />
-    </head>
-    <body>
-        <header>
-            <div class="content-wrapper">
-                <div class="float-left">
-                    <p class="site-title"><a href="~/">your logo here</a></p>
-                </div>
-                <div class="float-right">
-                    <section id="login">
-                        @if (WebSecurity.IsAuthenticated) {
-                            <text>
-                                Hello, <a class="email" href="~/Account/Manage" title="Manage">@WebSecurity.CurrentUserName</a>!
+<head>
+    <meta charset="utf-8" />
+    <title>@Page.Title - My ASP.NET Web Page</title>
+    <link href="~/Content/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.8.24.js"></script>
+    <script src="~/Scripts/modernizr-2.6.2.js"></script>
+    <script src="~/Scripts/heatmap.js"></script>
+    <meta name="viewport" content="width=device-width" />
+    <script type="text/javascript">
+        window.onload = function () {
+
+            var lastX = "0";
+            var lastY = "0";
+            var lastC = 0;
+            var save = false;
+
+            // heatmap configuration
+            var config = {
+                element: document.getElementById("heatmapArea"),
+                radius: 30,
+                opacity: 50
+                /*,
+                legend: {
+                    position: 'br',
+                    title: 'Mouse Movement Distribution'
+                }*/
+            };
+
+            //creates and initializes the heatmap
+            var heatmap = h337.create(config);
+
+            var active = true,
+                idle = false,
+                over = false,
+                x = 0,
+                y = 0,
+                simulate = false;
+
+            // activate capture mode
+            setInterval(function () {
+                active = true;
+            }, 80);
+
+            // check whether the mouse is idling
+            var idlechecker = setInterval(function () {
+                if (over && !simulate) {
+                    // if it's idling -> start the simulation 
+                    // and add the last x/y coords
+                    simulate = setInterval(function () {
+                        heatmap.store.addDataPoint(x, y, 1);
+                        
+                        //if (lastX == x && lastY == y) {
+                        //    lastC++;
+                        //} else {
+                        //    lastX = x;
+                        //    lastY = y;
+                        //    lastC = 1;
+                        //}
+
+                        // POST Coordinate
+                        $.ajax({
+                            url: 'http://localhost:60594/Heatmap/SaveCoordinate?x=' + x + '&y=' + y + '&c=' + 1,
+                            dataType: 'jsonp'
+                        });
+
+                    }, 1000);
+                }
+            }, 150);
+
+            var add = function (e) {
+                x = e.layerX;
+                y = e.layerY;
+                heatmap.store.addDataPoint(x, y, 1);
+                
+                //if (lastX == x && lastY == y){
+                //    lastC++;
+                //}
+                //else {
+                //    lastX = x;
+                //    lastY = y;
+                //    lastC = 1;
+                //}
+                
+                // POST Coordinate
+                $.ajax({
+                    url: 'http://localhost:60594/Heatmap/SaveCoordinate?x=' + x + '&y=' + y + '&c=' + 1,
+                    dataType: 'jsonp'
+                });
+            };
+
+            var element = document.getElementById("heatmapArea");
+
+            element.onmousemove = function (e) {
+                over = true;
+                if (simulate) {
+                    clearInterval(simulate);
+                    simulate = false;
+                }
+
+                if (active) {
+                    add(e);
+                    active = false;
+                }
+            };
+            element.onclick = function (e) {
+                add(e);
+            };
+            element.onmouseout = function () {
+                over = false;
+            };
+        };
+    </script>
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            min-height: 100%;
+        }
+    </style>
+</head>
+<body id="heatmapArea" style="border: 1px solid red; margin-bottom: 0">
+    <header>
+        <div class="content-wrapper">
+            <div class="float-left">
+                <p class="site-title"><a href="~/">your logo here</a></p>
+            </div>
+            <div class="float-right">
+                <section id="login">
+                    @if (WebSecurity.IsAuthenticated)
+                    {
+                        <text>
+                        Hello, <a class="email" href="~/Account/Manage" title="Manage">@WebSecurity.CurrentUserName</a>!
                                 <form id="logoutForm" action="~/Account/Logout" method="post">
                                     @AntiForgery.GetHtml()
                                     <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
                                 </form>
-                            </text>
-                        } else {
-                            <ul>
-                                <li><a href="~/Account/Register">Register</a></li>
-                                <li><a href="~/Account/Login">Log in</a></li>
-                            </ul>
-                        }
-                    </section>
-                    <nav>
-                        <ul id="menu">
-                            <li><a href="~/">Home</a></li>
-                            <li><a href="~/About">About</a></li>
-                            <li><a href="~/Contact">Contact</a></li>
+                        </text>
+                    }
+                    else
+                    {
+                        <ul>
+                            <li><a href="~/Account/Register">Register</a></li>
+                            <li><a href="~/Account/Login">Log in</a></li>
                         </ul>
-                    </nav>
-                </div>
+                    }
+                </section>
+                <nav>
+                    <ul id="menu">
+                        <li><a href="~/">Home</a></li>
+                        <li><a href="~/About">About</a></li>
+                        <li><a href="~/Contact">Contact</a></li>
+                    </ul>
+                </nav>
             </div>
-        </header>
-        <div id="body">
-            @RenderSection("featured", required: false)
-            <section class="content-wrapper main-content clear-fix">
-                @RenderBody()
-            </section>
         </div>
-        <footer>
-            <div class="content-wrapper">
-                <div class="float-left">
-                    <p>&copy; @DateTime.Now.Year - My ASP.NET Web Page</p>
-                </div>
+    </header>
+    <div id="body">
+        @RenderSection("featured", required: false)
+        <section class="content-wrapper main-content clear-fix">
+            @RenderBody()
+        </section>
+    </div>
+    <footer>
+        <div class="content-wrapper">
+            <div class="float-left">
+                <p>&copy; @DateTime.Now.Year - My ASP.NET Web Page</p>
             </div>
-        </footer>
-        @RenderSection("Scripts", required: false)
-    </body>
+        </div>
+    </footer>
+    @RenderSection("Scripts", required: false)
+</body>
 </html>
