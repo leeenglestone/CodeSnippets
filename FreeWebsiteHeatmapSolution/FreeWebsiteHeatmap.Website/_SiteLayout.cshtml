@@ -64,7 +64,7 @@
 
                         // POST Coordinate
                         $.ajax({
-                            url: 'http://localhost:60594/Heatmap/SaveCoordinate?x=' + x + '&y=' + y + '&c=' + 1,
+                            url: 'http://localhost:60594/Heatmap/SaveCoordinate?x=' + x + '&y=' + y + '&c=' + 1 + '&url=' + encodeURIComponent('http://localhost:60686/'),
                             dataType: 'jsonp'
                         });
 

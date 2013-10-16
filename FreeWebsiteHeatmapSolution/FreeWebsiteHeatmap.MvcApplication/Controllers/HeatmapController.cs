@@ -52,5 +52,10 @@ namespace FreeWebsiteHeatmap.MvcApplication.Controllers
 
         }
 
+        public ActionResult ViewHeatmap()
+        {
+            return View();
+        }
+
     }
 }
