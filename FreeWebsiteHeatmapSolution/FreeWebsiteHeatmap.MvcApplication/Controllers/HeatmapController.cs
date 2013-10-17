@@ -23,10 +23,17 @@ namespace FreeWebsiteHeatmap.MvcApplication.Controllers
             return View();
         }
 
-        public ActionResult SaveCoordinate(string x, string y, string c)
+        public ActionResult SaveCoordinate(string x, string y, string c, string u)
         //public ActionResult SaveCoordinate()
         {
             string path = Server.MapPath("~/App_Data/coordinates.txt");
+
+            if (!System.IO.File.Exists(Server.MapPath("~/App_Data/Screenshot.jpg")))
+            {
+                var thumbnailer = new WebpageThumbnail(u, 1024, 768, 1024, 768, WebpageThumbnail.ThumbnailMethod.Url);
+
+                var bitmap = thumbnailer.GenerateThumbnail();
+            }
 
             // This text is added only once to the file. 
             if (!System.IO.File.Exists(path))
