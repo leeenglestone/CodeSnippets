@@ -27,7 +27,11 @@
  * through the Google APIs authorization routine and the Google Anaytics
  * client library must be loaded before this function is called.
  */
+ 
+
+ 
 function makeApiCall() {
+
   outputToPage('Querying Accounts.');
   gapi.client.analytics.management.accounts.list().execute(handleAccounts);
 }

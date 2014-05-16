@@ -29,15 +29,56 @@ document.getElementById('start-date').value = lastNDays(14);
 document.getElementById('end-date').value = lastNDays(0);
 
 
+function checkSites() {
+	var views = [
+	"20522073", // Barcelona
+	"25320093", // Celtic
+	"20520767",	// Chelsea
+	"74835670", //BVB
+	"25159129",	// F1
+	"25246149",	// Wimbledon
+	"11417970",	// Real Madrid
+	"20520687",	// Man Utd
+	"5283961",	// Kitbag
+	"63667492",	// NBA
+	"9957532",	// RFU
+	"70029230",	// Roland Garros
+	"49181053",	// Leicester Tigers
+	"60938973",	// Sunderland
+	"62826767",	// NFL
+	"45026496",	// UEFA
+	"67634220"	// OM
+	];
+	
+	// var clients = [
+		// "Barcelona",
+		// "Celtic",
+		// "Chelsea",
+		// "BVB",
+		// "F1"
+	// ];
+	
+	for(var x=0; x < views.length; x++)
+	{
+	//alert(x);
+		makeApiCall(views[x]);
+	}
+	//ga:20522073
+	//makeApiCall();
+}
+
 /**
  * Executes a Core Reporting API query to retrieve the top 25 organic search
  * terms. Once complete, handleCoreReportingResults is executed. Note: A user
  * must have gone through the Google APIs authorization routine and the Google
  * Anaytics client library must be loaded before this function is called.
  */
-function makeApiCall() {
+//function makeApiCall() {
+function makeApiCall(viewId) {
+
   gapi.client.analytics.data.ga.get({
-    'ids': document.getElementById('table-id').value,
+    //'ids': document.getElementById('table-id').value,
+	'ids': 'ga:' + viewId,
     'start-date': document.getElementById('start-date').value,
     'end-date': document.getElementById('end-date').value,
     'metrics': 'ga:visits',
@@ -58,20 +99,67 @@ function makeApiCall() {
 function handleCoreReportingResults(results) {
   if (!results.code) {
     outputToPage('Query Success');
-    printReportInfo(results);
-    printPaginationInfo(results);
-    printProfileInfo(results);
-    printQuery(results);
-    printColumnHeaders(results);
-    printTotalsForAllResults(results);
-    printRows(results);
-    outputToPage(output.join(''));
+    //printReportInfo(results);
+    //printPaginationInfo(results);
+    //printProfileInfo(results);
+    //printQuery(results);
+	
+    //printColumnHeaders(results);
+    //printTotalsForAllResults(results);
+    //printRows(results);
+    
+	printBoxes(results);
+	
+	outputToPage(output.join(''));
 
   } else {
     outputToPage('There was an error: ' + results.message);
   }
 }
 
+function printBoxes(results)
+{
+	var info = results.profileInfo;
+
+	var siteName = info.profileName;
+
+	var totals = results.totalsForAllResults;
+	
+	for (metricName in totals) {
+		// output.push(
+		// '<p>',
+		// 'Metric Name  = ', metricName, '<br>',
+		// 'Metric Total = ', totals[metricName], '<br>',
+		// '</p>');
+		
+		var siteHtml = "<div class=\"site\"><div class=\"title\">" + siteName + "</div><div class=\"count\">" + totals[metricName] + "</div></div>";
+		
+		document.getElementById('sites').innerHTML += siteHtml;
+		
+	}
+}
+
+/**
+ * Prints the total metric value for all pages the query matched.
+ * @param {Object} results The object returned from the API.
+ */
+function printTotalsForAllResults(results) {
+  output.push(
+      '<h3>Total Metrics For All Results</h3>',
+      '<p>This query returned ', results.rows.length, ' rows. ',
+      'But the query matched ', results.totalResults, ' total results. ',
+      'Here are the metric totals for the matched total results.</p>');
+
+  var totals = results.totalsForAllResults;
+  for (metricName in totals) {
+    output.push(
+        '<p>',
+        'Metric Name  = ', metricName, '<br>',
+        'Metric Total = ', totals[metricName], '<br>',
+        '</p>');
+  }
+
+}
 
 /**
  * Prints general information about this report.
@@ -163,27 +251,7 @@ function printColumnHeaders(results) {
 }
 
 
-/**
- * Prints the total metric value for all pages the query matched.
- * @param {Object} results The object returned from the API.
- */
-function printTotalsForAllResults(results) {
-  output.push(
-      '<h3>Total Metrics For All Results</h3>',
-      '<p>This query returned ', results.rows.length, ' rows. ',
-      'But the query matched ', results.totalResults, ' total results. ',
-      'Here are the metric totals for the matched total results.</p>');
 
-  var totals = results.totalsForAllResults;
-  for (metricName in totals) {
-    output.push(
-        '<p>',
-        'Metric Name  = ', metricName, '<br>',
-        'Metric Total = ', totals[metricName], '<br>',
-        '</p>');
-  }
-
-}
 
 
 /**

@@ -19,6 +19,11 @@
  * @author api.nickm@gmail.com (Nick Mihailovski)
  */
 
+ /*
+ 
+ use ga:77546269
+ 
+ */
 
 
 /**
@@ -28,8 +33,8 @@
  * section in the Google JavaScript Client Library.
  * https://code.google.com/p/google-api-javascript-client/wiki/Authentication
  */
-var clientId = '821751250764.apps.googleusercontent.com';
-var apiKey = 'AIzaSyAPusS7gzp0bTla1ogGW_hJOwamaBwVT5Q';
+var clientId = '720407426676-bpn3vipc3pdtf5o3jtlfsctqbs1cll7q.apps.googleusercontent.com';
+var apiKey = 'AIzaSyClU92I7vb62AZ1c0TFgfLW6KkBJuaHus8';
 var scopes = 'https://www.googleapis.com/auth/analytics.readonly';
 
 
@@ -85,8 +90,9 @@ function handleAuthorized() {
 
   authorizeButton.style.visibility = 'hidden';
   runDemoButton.style.visibility = '';
-  runDemoButton.onclick = makeApiCall;
-  outputToPage('Click the Run Demo button to begin.');
+  //runDemoButton.onclick = makeApiCall;
+  runDemoButton.onclick = checkSites;
+  outputToPage('');
 }
 
 
