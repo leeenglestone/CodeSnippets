@@ -60,11 +60,10 @@ function checkSites() {
 	
 	for(var x=0; x < views.length; x++)
 	{
-	//alert(x);
+	
 		makeApiCall(views[x]);
 	}
-	//ga:20522073
-	//makeApiCall();
+	
 }
 
 /**
@@ -81,10 +80,12 @@ function makeApiCall(viewId) {
 	'ids': 'ga:' + viewId,
     'start-date': document.getElementById('start-date').value,
     'end-date': document.getElementById('end-date').value,
-    'metrics': 'ga:visits',
+    'metrics': 'ga:visits',	
+	//'metrics': 'ga:transactionsPerSession',
+	 
     'dimensions': 'ga:source,ga:keyword',
     'sort': '-ga:visits,ga:source',
-    'filters': 'ga:medium==organic',
+    //'filters': 'ga:medium==organic',
     'max-results': 25
   }).execute(handleCoreReportingResults);
 }
@@ -132,7 +133,8 @@ function printBoxes(results)
 		// 'Metric Total = ', totals[metricName], '<br>',
 		// '</p>');
 		
-		var siteHtml = "<div class=\"site\"><div class=\"title\">" + siteName + "</div><div class=\"count\">" + totals[metricName] + "</div></div>";
+		//var siteHtml = "<div class=\"site\"><div class=\"title\">" + siteName + "</div><div class=\"count\">" + parseFloat(totals[metricName]).toFixed(2) + "</div></div>";
+		var siteHtml = "<div class=\"site\"><div class=\"title\">" + siteName + "</div><div class=\"count\">" + parseFloat(totals[metricName]) + "</div></div>";
 		
 		document.getElementById('sites').innerHTML += siteHtml;
 		
