@@ -36,11 +36,11 @@ var views = [
 	"20522073", // Barcelona
 	"25320093", // Celtic
 	"20520767",	// Chelsea
-	"74835670", //BVB
+	"74835670", // BVB
 	"25159129",	// F1
 	"25246149",	// Wimbledon
 	"11417970",	// Real Madrid
-	"20520687",	// Man Utd
+	"20520687",	// Man Utd	
 	"5283961",	// Kitbag
 	"63667492",	// NBA
 	"9957532",	// RFU
@@ -49,12 +49,23 @@ var views = [
 	"60938973",	// Sunderland
 	"62826767",	// NFL
 	"45026496",	// UEFA
-	"67634220"	// OM
+	"67634220",	// OM
+	"16187071"	// Everton
 	];	
 
+	function showDate()
+	{
+		var date = $('#start-date').val() + ' to ' + $('#end-date').val();
+		$('#reportDate').html('(' + date + ')');
+	}
+	
 function siteVisits() {
 
+	showDate();
+
 	$('#reportTitle').text('Site Visits');
+	
+	
 	ShowDecimal = false;
 	ShowCommas = true;
 	ShowPercentage = false;
@@ -72,7 +83,10 @@ function siteVisits() {
 	
 function conversionRates() {
 		
-	$('#reportTitle').text('Conversion Rate');
+	showDate();
+		
+	$('#reportTitle').text('Conversion Rate');	
+	
 	ShowDecimal = true;
 	ShowCommas = false;
 	ShowPercentage = true;
@@ -89,8 +103,11 @@ function conversionRates() {
 }
 
 function realTimeVisitors() {
-				
+	
+	//showDate();
+	
 	$('#reportTitle').text('Real Time Visitors');
+	
 	ShowDecimal = false;
 	ShowCommas = true;
 	ShowPercentage = false;
