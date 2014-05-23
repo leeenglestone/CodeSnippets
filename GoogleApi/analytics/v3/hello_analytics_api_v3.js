@@ -146,6 +146,13 @@ function handleProfiles(response) {
  */
 function queryCoreReportingApi(profileId) {
   updatePage('Querying Core Reporting API.');
+  
+  analytics.data.realtime.get({
+	'ids': 'ga:' + profileId,      
+    'metrics': 'rt:activeUsers',
+  }).execute(handleCoreReportingResults);
+  
+  /*
   gapi.client.analytics.data.ga.get({
     'ids': 'ga:' + profileId,
     'start-date': lastNDays(14),
@@ -156,6 +163,7 @@ function queryCoreReportingApi(profileId) {
     'filters': 'ga:medium==organic',
     'max-results': 25
   }).execute(handleCoreReportingResults);
+  */
 }
 
 

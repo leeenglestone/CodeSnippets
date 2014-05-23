@@ -19,11 +19,6 @@
  * @author api.nickm@gmail.com (Nick Mihailovski)
  */
 
- /*
- 
- use ga:77546269
- 
- */
 
 
 /**
@@ -44,6 +39,7 @@ var scopes = 'https://www.googleapis.com/auth/analytics.readonly';
  * this library. After 1 millisecond, checkAuth is called.
  */
 function handleClientLoad() {
+
   gapi.client.setApiKey(apiKey);
   window.setTimeout(checkAuth, 1);
 }
@@ -86,12 +82,20 @@ function handleAuthResult(authResult) {
  */
 function handleAuthorized() {
   var authorizeButton = document.getElementById('authorize-button');
-  var runDemoButton = document.getElementById('run-demo-button');
-
+  var btnSiteVisits = document.getElementById('btnSiteVisits');
+  var btnConversions = document.getElementById('btnConversions');
+  var btnRealTime = document.getElementById('btnRealTime');
+    
   authorizeButton.style.visibility = 'hidden';
-  runDemoButton.style.visibility = '';
-  //runDemoButton.onclick = makeApiCall;
-  runDemoButton.onclick = checkSites;
+  
+  btnSiteVisits.style.visibility = '';
+  btnConversions.style.visibility = '';
+  btnRealTime.style.visibility = '';
+  
+  btnSiteVisits.onclick = siteVisits;
+  btnConversions.onclick = conversionRates;
+  btnRealTime.onclick = realTimeVisitors;
+  
   outputToPage('');
 }
 
@@ -104,9 +108,13 @@ function handleAuthorized() {
  */
 function handleUnauthorized() {
   var authorizeButton = document.getElementById('authorize-button');
-  var runDemoButton = document.getElementById('run-demo-button');
+  
+  var btnSiteVisits = document.getElementById('btnSiteVisits');
+  var btnConversions = document.getElementById('btnConversions');
 
-  runDemoButton.style.visibility = 'hidden';
+  btnSiteVisits.style.visibility = 'hidden';
+  btnConversions.style.visibility = 'hidden';
+  
   authorizeButton.style.visibility = '';
   authorizeButton.onclick = handleAuthClick;
   outputToPage('Please authorize this script to access Google Analytics.');

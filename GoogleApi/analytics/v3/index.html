@@ -4,7 +4,7 @@
   <title>Core Reporting API v3 Reference Example</title>
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Cantarell|Inconsolata">
   <link rel="stylesheet" type="text/css" href="pretty.css">
-  
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
   <style>
 	body{
 		background-color:#eeeeee;
@@ -17,33 +17,15 @@
 	
 	#sites .site .title { font-weight:bold; font-size:2em; height:100px; overflow:hidden; background-color:#006CD1; color:#fff; vertical-alignment:middle }
 	
-	#sites .site .count { font-size:3em; font-weight:bold; text-align:center; }
+	#sites .site .count { font-size:3em; font-weight:bold; text-align:center; margin-top:60px; }
 	
-	h2 { text-align:center; font-size:3em; }
+	h2 { text-align:center; font-size:3em; margin:0px; }
 	
   </style>
   
 </head>
 <body>
 <h1>Core Reporting API v3 Reference Example</h1>
-<!--<p>This page demonstrates how to use the
-   <a href="https://code.google.com/p/google-api-javascript-client/">
-      Google API Javascript Client Library</a> to access all the important
-      information from the
-   <a href="http://code.google.com/apis/analytics/docs/gdata/v3/gdataGettingStarted.html">
-      Core Reporting API</a>.</p>
-
-<p>To learn how this works, read the detailed comments in the
-   <a href="core_reporting_api_v3_reference.js">JavaScript source code</a>.</p>
-
-<p>To run the demo:</p>
-<ol>
-  <li>Click the authorize button to grant access to your Google Analytics data.</li>
-  <li>Fill in the required Table Id parameter.</li>
-  <li>Click the run demo button to start the demo.</li>
-</ol>
--->
-
 
 
 <ul id="ga-table">
@@ -54,15 +36,21 @@
       <input id="start-date" class="c2"></input></li>
   <li><p class="c1">End Date:</p>
       <input id="end-date" class="c2"></input></li>
-  <li><button id="run-demo-button" style="visibility: hidden">Run Report</button></li>
+  
 </ul>
+<p>
+<button id="btnConversions" style="visibility: hidden">Conversions</button>
+<button id="btnSiteVisits" style="visibility:hidden">Site Visits</button>
+<button id="btnRealTime" style="visibility:hidden">RealTime</button>
+</p>
 <button id="authorize-button" style="visibility: hidden">Authorize</button>
+
 
 
 <hr>
 <div id="output">Loading, one sec....</div>
 
-<h2>Visits between 02/05/2014 and 16/05/2014</h2>
+<h2 id="reportTitle"></h2>
 
 <div id="sites">
 	<!-- <div class="site">

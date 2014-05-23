@@ -23,14 +23,16 @@
 // Simple place to store all the results before printing to the user.
 var output = [];
 
+var ReportTitle = '';
+var ShowCommas = false;
+var ShowDecimal = false;
+var ShowPercentage = false;
 
 // Initialize the UI Dates.
 document.getElementById('start-date').value = lastNDays(14);
 document.getElementById('end-date').value = lastNDays(0);
 
-
-function checkSites() {
-	var views = [
+var views = [
 	"20522073", // Barcelona
 	"25320093", // Celtic
 	"20520767",	// Chelsea
@@ -48,22 +50,94 @@ function checkSites() {
 	"62826767",	// NFL
 	"45026496",	// UEFA
 	"67634220"	// OM
-	];
+	];	
+
+function siteVisits() {
+
+	$('#reportTitle').text('Site Visits');
+	ShowDecimal = false;
+	ShowCommas = true;
+	ShowPercentage = false;
+		
+	document.getElementById('sites').innerHTML = '';
+		
+	var x= 0;
+	var timer = setInterval(function() { 
+		showSiteVisits(views[x]); x++;  
+		if(x==views.length) { 
+			clearInterval(timer); 			
+		}  
+	}, 100);		
+}
 	
-	// var clients = [
-		// "Barcelona",
-		// "Celtic",
-		// "Chelsea",
-		// "BVB",
-		// "F1"
-	// ];
-	
-	for(var x=0; x < views.length; x++)
-	{
-	
-		makeApiCall(views[x]);
-	}
-	
+function conversionRates() {
+		
+	$('#reportTitle').text('Conversion Rate');
+	ShowDecimal = true;
+	ShowCommas = false;
+	ShowPercentage = true;
+		
+	document.getElementById('sites').innerHTML = '';
+		
+	var x= 0;
+	var timer = setInterval(function() { 
+		showConversionRate(views[x]); x++;  
+		if(x==views.length) { 
+			clearInterval(timer); 			
+		}  
+	}, 100);		
+}
+
+function realTimeVisitors() {
+				
+	$('#reportTitle').text('Real Time Visitors');
+	ShowDecimal = false;
+	ShowCommas = true;
+	ShowPercentage = false;
+		
+	document.getElementById('sites').innerHTML = '';
+		
+	var x= 0;
+	var timer = setInterval(function() { 
+		showRealTime(views[x]); x++;  
+		if(x==views.length) { 
+			clearInterval(timer); 			
+		}  
+	}, 100);		
+}
+
+
+function showRealTime(viewId)
+{	
+	gapi.client.setApiKey('AIzaSyClU92I7vb62AZ1c0TFgfLW6KkBJuaHus8');		
+  
+	var request = gapi.client.request({    
+	'path': '/analytics/v3/data/realtime',    
+    'params': {
+		'ids': 'ga:' + viewId,
+		'metrics': 'rt:ActiveUsers'		
+		}      
+  });
+  
+  request.execute(handleCoreReportingResults);
+  
+  //request.execute(function(resp) { console.log(resp); });
+}
+
+function showSiteVisits(viewId) {
+
+	gapi.client.analytics.data.ga.get({     
+	'ids': 'ga:' + viewId,
+    'start-date': document.getElementById('start-date').value,
+    'end-date': document.getElementById('end-date').value,
+    'metrics': 'ga:visits',	
+	//'metrics': 'ga:transactionsPerSession',
+	 
+    //'dimensions': 'ga:source,ga:keyword',
+    //'sort': '-ga:visits,ga:source',
+    //'filters': 'ga:medium==organic',
+    'max-results': 25
+  }).execute(handleCoreReportingResults);
 }
 
 /**
@@ -72,22 +146,21 @@ function checkSites() {
  * must have gone through the Google APIs authorization routine and the Google
  * Anaytics client library must be loaded before this function is called.
  */
-//function makeApiCall() {
-function makeApiCall(viewId) {
 
-  gapi.client.analytics.data.ga.get({
-    //'ids': document.getElementById('table-id').value,
+function showConversionRate(viewId) {
+
+  gapi.client.analytics.data.ga.get({     
 	'ids': 'ga:' + viewId,
     'start-date': document.getElementById('start-date').value,
-    'end-date': document.getElementById('end-date').value,
-    'metrics': 'ga:visits',	
-	//'metrics': 'ga:transactionsPerSession',
+    'end-date': document.getElementById('end-date').value,    
+	'metrics': 'ga:transactionsPerSession',
 	 
-    'dimensions': 'ga:source,ga:keyword',
-    'sort': '-ga:visits,ga:source',
+    //'dimensions': 'ga:source,ga:keyword',
+    //'sort': '-ga:visits,ga:source',
     //'filters': 'ga:medium==organic',
     'max-results': 25
   }).execute(handleCoreReportingResults);
+    
 }
 
 
@@ -133,8 +206,23 @@ function printBoxes(results)
 		// 'Metric Total = ', totals[metricName], '<br>',
 		// '</p>');
 		
-		//var siteHtml = "<div class=\"site\"><div class=\"title\">" + siteName + "</div><div class=\"count\">" + parseFloat(totals[metricName]).toFixed(2) + "</div></div>";
-		var siteHtml = "<div class=\"site\"><div class=\"title\">" + siteName + "</div><div class=\"count\">" + parseFloat(totals[metricName]) + "</div></div>";
+		
+		
+		var siteHtml = "";
+		
+		if(ShowDecimal)
+		{		
+			siteHtml = "<div class=\"site\"><div class=\"title\">" + siteName + "</div><div class=\"count\">" + parseFloat(totals[metricName]).toFixed(2) + "</div></div>";
+		}
+		else
+		{
+			siteHtml = "<div class=\"site\"><div class=\"title\">" + siteName + "</div><div class=\"count\">" + parseFloat(totals[metricName]).toLocaleString() + "</div></div>";
+		}	
+
+		if(ShowPercentage)
+		{
+			siteHtml = "<div class=\"site\"><div class=\"title\">" + siteName + "</div><div class=\"count\">" + parseFloat(totals[metricName]).toFixed(2) + "%</div></div>";
+		}
 		
 		document.getElementById('sites').innerHTML += siteHtml;
 		
@@ -251,10 +339,6 @@ function printColumnHeaders(results) {
         '</p>');
   }
 }
-
-
-
-
 
 /**
  * Prints all the column headers and rows of data as an HTML table.
