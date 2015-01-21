@@ -1,0 +1,21 @@
+
+-- Get list of packages
+Get-Package 
+
+-- Get list of available versions of a given package including (pre-release)
+Get-Package Kitbag.Common -ListAvailable -IncludePrerelease -AllVersions
+
+-- Uninstall package
+Uninstall-Package Kitbag.Common
+
+-- Install package
+Install-Package Kitbag.Common -IncludePrerelease -Version 0.87-DOCCAlt
+
+
+
+
+
+
+
+
+
