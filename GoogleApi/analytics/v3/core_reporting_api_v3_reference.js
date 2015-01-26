@@ -27,10 +27,13 @@ var ReportTitle = '';
 var ShowCommas = false;
 var ShowDecimal = false;
 var ShowPercentage = false;
+var TotalVisitors = 0;
 
 // Initialize the UI Dates.
 document.getElementById('start-date').value = lastNDays(14);
 document.getElementById('end-date').value = lastNDays(0);
+
+var SiteObjects = [];
 
 var views = [
 	"20522073", // Barcelona
@@ -50,14 +53,16 @@ var views = [
 	"62826767",	// NFL
 	"45026496",	// UEFA
 	"67634220",	// OM
-	"16187071"	// Everton
+	"16187071",	// Everton
+	"17284999",	// OpenGolf
+	"71074289"	// LeTour
 	];	
 
-	function showDate()
-	{
-		var date = $('#start-date').val() + ' to ' + $('#end-date').val();
-		$('#reportDate').html('(' + date + ')');
-	}
+function showDate()
+{
+	var date = $('#start-date').val() + ' to ' + $('#end-date').val();
+	$('#reportDate').html('(' + date + ')');
+}
 	
 function siteVisits() {
 
@@ -74,11 +79,16 @@ function siteVisits() {
 		
 	var x= 0;
 	var timer = setInterval(function() { 
-		showSiteVisits(views[x]); x++;  
+		
+		showSiteVisits(views[x]); 
+		x++;  
+		
 		if(x==views.length) { 
 			clearInterval(timer); 			
 		}  
-	}, 100);		
+	}, 100);	
+
+	
 }
 	
 function conversionRates() {
@@ -105,7 +115,7 @@ function conversionRates() {
 function realTimeVisitors() {
 	
 	//showDate();
-	
+	TotalVisitors = 0;
 	$('#reportTitle').text('Real Time Visitors');
 	
 	ShowDecimal = false;
@@ -116,11 +126,17 @@ function realTimeVisitors() {
 		
 	var x= 0;
 	var timer = setInterval(function() { 
-		showRealTime(views[x]); x++;  
+		
+		showRealTime(views[x]); 		
+		x++;  
+		
 		if(x==views.length) { 
-			clearInterval(timer); 			
+			clearInterval(timer); 	
+			$('#reportTitle').text('Real Time Visitors (Total=' + TotalVisitors + ')');			
 		}  
 	}, 100);		
+	
+	
 }
 
 
@@ -202,6 +218,8 @@ function handleCoreReportingResults(results) {
 	printBoxes(results);
 	
 	outputToPage(output.join(''));
+	
+	
 
   } else {
     outputToPage('There was an error: ' + results.message);
@@ -223,6 +241,7 @@ function printBoxes(results)
 		// 'Metric Total = ', totals[metricName], '<br>',
 		// '</p>');
 		
+		//SiteObjects.push(new Site {});
 		
 		
 		var siteHtml = "";
@@ -241,9 +260,13 @@ function printBoxes(results)
 			siteHtml = "<div class=\"site\"><div class=\"title\">" + siteName + "</div><div class=\"count\">" + parseFloat(totals[metricName]).toFixed(2) + "%</div></div>";
 		}
 		
+		TotalVisitors += parseInt(totals[metricName]);
+		
 		document.getElementById('sites').innerHTML += siteHtml;
 		
 	}
+	
+	
 }
 
 /**
