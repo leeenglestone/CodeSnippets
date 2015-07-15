@@ -35,8 +35,7 @@ document.getElementById('end-date').value = lastNDays(0);
 
 var SiteObjects = [];
 
-var views = [
-	"20522073", // Barcelona
+var views = [	
 	"25320093", // Celtic
 	"20520767",	// Chelsea
 	"74835670", // BVB
@@ -45,11 +44,12 @@ var views = [
 	"11417970",	// Real Madrid
 	"20520687",	// Man Utd	
 	"5283961",	// Kitbag
+	"67811589",	// KB Style
 	"63667492",	// NBA
-	"9957532",	// RFU
+	"79699922",	// NHL
+	"9957532",	// ERS
 	"70029230",	// Roland Garros
-	"49181053",	// Leicester Tigers
-	"60938973",	// Sunderland
+	"49181053",	// Leicester Tigers	
 	"62826767",	// NFL
 	"45026496",	// UEFA
 	"67634220",	// OM

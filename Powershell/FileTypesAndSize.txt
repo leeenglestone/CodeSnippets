@@ -1,0 +1,13 @@
+Get-ChildItem -recurse -filter "*.mp4" | Out-File c:\test\files.txt
+
+Get-ChildItem -recurse | Where {$_.Extension -eq ".mp4"} | % { Write-Host $_.FullName }
+
+Get-ChildItem -recurse -Exclude "*.dll", "*.pdb" | Sort-Object Length -descending | Select -First 50
+
+Get-ChildItem -recurse -Exclude "*.dll", "*.pdb" | Sort-Object Length -descending | Select -First 50 | Format-Table Length, FullName
+
+Get-ChildItem -recurse -Exclude "*.dll", "*.pdb" | Sort-Object Length -descending | Select -First 50 | Format-Table -AutoSize Length, FullName, @{Name="Kbytes";Expression={$_.Length / 1Kb}} | Out-String -Width 4096 | Out-File c:\test\files.txt
+
+Get-ChildItem -recurse -Exclude "*.dll", "*.pdb" | Sort-Object Length -descending | Select -First 50 | Format-Table -AutoSize Length, FullName, @{Name="MBytes";Expression={$_.Length / 1Mb}} | Out-String -Width 4096 | Out-File c:\test\files.txt
+
+(Get-Item 'D:\sample.xls').length -gt 5kb

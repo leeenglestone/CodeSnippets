@@ -15,7 +15,10 @@ Install-Package Kitbag.Common -IncludePrerelease -Version 0.87-DOCCAlt
 
 
 
+Kitbag.Services.PublicEntities 0.79-CocaCola
 
+Install-Package Kitbag.Services.PublicEntities -IncludePrerelease -Version 0.79-CocaCola
 
+Install-Package Kitbag.Services.Logic.Interfaces -IncludePrerelease -Version 0.2-CocaCola
 
 
