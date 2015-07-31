@@ -1,4 +1,4 @@
-public class SessionData: INotifyPropertyChanged
+public class SomeData: INotifyPropertyChanged
     {
 
  public event PropertyChangedEventHandler PropertyChanged;
@@ -8,18 +8,17 @@ public class SessionData: INotifyPropertyChanged
                 PropertyChanged(this, new PropertyChangedEventArgs(info));
         }
 
-
-        bool _rememberUser; 
-        public bool RememberUser
+        bool _someField; 
+        public bool SomeProperty
         {
             get 
             {
-                return _rememberUser; 
+                return _someField; 
             }
             set
             {
-                _rememberUser= value;
-                NotifyPropertyChanged("RememberUser");
+                _someField = value;
+                NotifyPropertyChanged("SomeProperty");
             }
         }
 }
