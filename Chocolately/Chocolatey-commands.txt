@@ -1,0 +1,3 @@
+chocolatey list -localonly
+chocolatey list -lo
+clist -lo
