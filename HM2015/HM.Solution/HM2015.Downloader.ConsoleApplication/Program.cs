@@ -2,15 +2,38 @@
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Net;
 
 namespace HM2015.Downloader.ConsoleApplication
 {
     class Program
     {
         static void Main(string[] args)
+        {
+            //ProcessAttendees();
+
+            //ShowFacialRecognition(@"C:\test\HM2015\HM\hack_manchester.jpg");
+
+            //ShowFacialRecognition(@"C:\test\HM2015\HM\1.jpg");
+            //ShowFacialRecognition(@"C:\test\HM2015\HM\2.jpg");
+            //ShowFacialRecognition(@"C:\test\HM2015\HM\3.jpg");
+            //ShowFacialRecognition(@"C:\test\HM2015\HM\4.jpg");
+
+            //ShowFacialRecognition(@"C:\test\HM2015\HM\5.jpg");
+            //ShowFacialRecognition(@"C:\test\HM2015\HM\6.jpg");
+            ShowFacialRecognition(@"C:\test\HM2015\HM\7.jpg");
+
+            Console.ReadLine();
+
+        }
+
+        static void ShowFacialRecognition(string imagePath)
+        {
+            FacialRecognition.Library.FacialRecognition.Run(imagePath);
+        }
+
+        private static void ProcessAttendees()
         {
             string url = "http://www.eventbrite.com/e/hackmanchester-2015-tickets-15514426066";
 
@@ -21,11 +44,6 @@ namespace HM2015.Downloader.ConsoleApplication
                 driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                 driver.Navigate().GoToUrl(url);
 
-
-                //var userNameField = driver.FindElementById("usr");
-                //var userPasswordField = driver.FindElementById("pwd");
-                //var uls = driver.FindElementByXPath("//td[@id='pagedown_1']/ul");
-
                 var uls = driver.FindElements(By.XPath("//td[@id='pagedown_1']/ul"));
 
                 foreach (var ul in uls)
@@ -34,6 +52,7 @@ namespace HM2015.Downloader.ConsoleApplication
 
                     string name = "";
                     string handle = "";
+                    string location = "";
 
                     name = bolds[0].Text;
 
@@ -45,48 +64,75 @@ namespace HM2015.Downloader.ConsoleApplication
                     Console.WriteLine("Name : {0}", name);
                     Console.WriteLine("Handle : {0}", handle);
 
-                    people.Add(new Person() { Name = name, Handle = handle });
+                    people.Add(new Person()
+                    {
+                        Name = name,
+                        TwitterProfile = new TwitterProfile(handle, location)
+                    });
                 }
             }
 
-            foreach(var person in people)
+            foreach (var person in people)
             {
-                if(!String.IsNullOrWhiteSpace(person.Handle))
+                if (!String.IsNullOrWhiteSpace(person.TwitterProfile.Handle))
                 {
-                    string profileImageUrl = GetTwitterProfile(person.Handle);
-                    person.ProfileImageUrl = profileImageUrl;
-                    Console.WriteLine(profileImageUrl);
+                    person.TwitterProfile = GetTwitterProfile(person.TwitterProfile.Handle);
+                    Console.WriteLine(person.TwitterProfile.ProfileImageUrl);
                 }
             }
-
-            Console.ReadLine();
-
         }
 
-        static string GetTwitterProfile(string twitterHandle)
+        static TwitterProfile GetTwitterProfile(string twitterHandle)
         {
+            var twitterProfile = new TwitterProfile(twitterHandle);
+
             string url = String.Format("http://www.twitter.com/{0}", twitterHandle);
-            string imageUrl = "";
 
             using (var driver = new ChromeDriver())
             {
                 driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-
                 driver.Navigate().GoToUrl(url);
-
                 var image = driver.FindElement(By.XPath("//img[@class='ProfileAvatar-image ']"));
+                twitterProfile.ProfileImageUrl= image.GetAttribute("src");
 
-                imageUrl = image.GetAttribute("src");
+                string profileImageSaveLocation = String.Format(@"c:\test\hm2015\{0}.jpg", twitterProfile.Handle);
+
+                if(!File.Exists(profileImageSaveLocation))
+                {
+                    using (WebClient webClient = new WebClient())
+                    {
+                        webClient.DownloadFile(twitterProfile.ProfileImageUrl, profileImageSaveLocation);
+                    }
+                }
             }
 
-            return imageUrl;
+            return twitterProfile;
         }
     }
 
-    class Person
+    internal class Person
     {
         public String Name { get; set; }
-        public string Handle { get; set; }
+        public TwitterProfile TwitterProfile { get; set; }
+    }
+
+    internal class TwitterProfile
+    {
+        public TwitterProfile(string handle, string location)
+        {
+            Handle = handle;
+            Location = location;
+        }
+
+        public TwitterProfile(string twitterHandle)
+        {
+            Handle = twitterHandle;
+        }
+
         public string ProfileImageUrl { get; set; }
+        public string Handle { get; set; }
+        public string Location { get; set; }
+
+
     }
 }
