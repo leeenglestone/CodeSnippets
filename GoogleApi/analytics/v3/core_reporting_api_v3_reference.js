@@ -34,7 +34,7 @@ document.getElementById('start-date').value = lastNDays(14);
 document.getElementById('end-date').value = lastNDays(0);
 
 var SiteObjects = [];
-
+/*
 var views = [	
 	"25320093", // Celtic
 	"20520767",	// Chelsea
@@ -56,6 +56,13 @@ var views = [
 	"16187071",	// Everton
 	"17284999",	// OpenGolf
 	"71074289"	// LeTour
+	];	
+*/
+
+var views = [	
+	"2433484", // Contract Hire and Leasing
+	"4189762"	// Road test Reports
+	
 	];	
 
 function showDate()
